@@ -3,6 +3,8 @@
 ![CI](https://github.com/thinkbruno/docs-validator/actions/workflows/ci.yml/badge.svg?branch=main)
 ![Python](https://img.shields.io/badge/python-3.9%2B-blue)
 ![License](https://img.shields.io/badge/license-MIT-green)
+![PyPI](https://img.shields.io/pypi/v/docs-validator)
+![Downloads](https://img.shields.io/pypi/dm/docs-validator)
 
 A lightweight Python library for validating Brazilian document
 identifiers.
