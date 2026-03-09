@@ -1,0 +1,18 @@
+[project]
+name = "docs-validator"
+version = "0.1.0"
+description = "Brazilian document validator (CNPJ numeric and alphanumeric)"
+authors = [{ name = "Bruno Ramos" }]
+readme = "README.md"
+requires-python = ">=3.9"
+license = { text = "MIT" }
+
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
