@@ -1,17 +1,75 @@
-from .utils import normalize
-from .dv import calculate_digit, WEIGHTS_FIRST, WEIGHTS_SECOND
+import re
+
+from docs_validator.br.cpf import validate_cpf
+from docs_validator.br.cnpj import validate_cnpj
+from docs_validator.experimental.cnpj_alphanumeric import validate_cnpj_alphanumeric
 
 
-def validate(cnpj: str) -> bool:
-    cnpj = normalize(cnpj)
+def normalize(doc: str) -> str:
+    """
+    Remove caracteres não alfanuméricos.
+    """
+    return re.sub(r"[^0-9A-Za-z]", "", doc)
 
-    if len(cnpj) != 14:
+
+def detect(doc: str) -> str | None:
+    """
+    Detect document type automatically.
+
+    Returns:
+        CPF
+        CNPJ
+        CNPJ_ALPHANUMERIC
+        None
+    """
+
+    doc = normalize(doc)
+
+    if len(doc) == 11 and doc.isdigit():
+        return "CPF"
+
+    if len(doc) == 14:
+
+        if doc.isdigit():
+            return "CNPJ"
+
+        if any(c.isalpha() for c in doc):
+            return "CNPJ_ALPHANUMERIC"
+
+    return None
+
+
+def validate(doc: str, mode: str = "standard") -> bool:
+    """
+    Generic document validator.
+
+    Parameters
+    ----------
+    doc : str
+        Document number
+    mode : str
+        standard | experimental
+
+    Returns
+    -------
+    bool
+    """
+
+    doc = normalize(doc)
+
+    doc_type = detect(doc)
+
+    if doc_type == "CPF":
+        return validate_cpf(doc)
+
+    if doc_type == "CNPJ":
+        return validate_cnpj(doc)
+
+    if doc_type == "CNPJ_ALPHANUMERIC":
+
+        if mode == "experimental":
+            return validate_cnpj_alphanumeric(doc)
+
         return False
 
-    base = cnpj[:12]
-    dv = cnpj[12:]
-
-    digit1 = calculate_digit(base, WEIGHTS_FIRST)
-    digit2 = calculate_digit(base + str(digit1), WEIGHTS_SECOND)
-
-    return dv == f"{digit1}{digit2}"
+    return False
