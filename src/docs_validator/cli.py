@@ -1,6 +1,7 @@
 import typer
 from docs_validator import detect
 from docs_validator.br.generators import generate_cpf, generate_cnpj
+import json
 
 app = typer.Typer()
 
@@ -10,7 +11,7 @@ def validate(doc: str):
 
     result = detect(doc)
 
-    print(result)
+    print(json.dumps(result, indent=2))
 
 
 @app.command()
@@ -21,3 +22,10 @@ def generate(doc_type: str):
 
     elif doc_type == "cnpj":
         print(generate_cnpj())
+
+    else:
+        raise typer.BadParameter("doc_type must be cpf or cnpj")
+
+
+if __name__ == "__main__":
+    app()
