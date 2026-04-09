@@ -5,19 +5,19 @@
 ![License](https://img.shields.io/github/license/thinkbruno/docs-validator)
 ![PyPI](https://img.shields.io/pypi/v/docs-validator)
 
-A lightweight Python library for validating and generating document
-numbers, starting with Brazilian documents.
+A Python library and CLI to validate Brazilian documents (CPF, CNPJ), including experimental support for alphanumeric CNPJ.
 
-The project focuses on:
+## Features
 
-- CPF validation
-- CNPJ validation
-- Experimental **alphanumeric CNPJ**
-- Automatic document detection
-- Document generators
-- CLI usage
-- PyPI distribution
-- CI/CD and test coverage
+- **Validate CPF**
+- **Validate CNPJ** (numeric)
+- **Experimental alphanumeric CNPJ**
+- **Multiple validation modes:**
+  - `strict` (default)
+  - `loose`
+  - `experimental`
+- **CLI support**
+- **JSON output**
 
 ---
 
@@ -41,219 +41,84 @@ pip install -e .
 
 ---
 
-# Quick Usage
+# Usage
 
 ```python
 from docs_validator import validate
 
-validate("52998224725")
-validate("11222333000181")
+result = validate("11222333000181")
+print(result)
 ```
 
----
+# Output
 
-# API Overview
-
-## Generic Validation
-
-The `validate()` function automatically detects the document type.
-
-```python
-from docs_validator import validate
-
-validate("52998224725")       # CPF
-validate("11222333000181")    # CNPJ
+```json
+{
+  "country": "BR",
+  "type": "CNPJ",
+  "valid": true
+}
 ```
-
----
-
-## Auto Detection
-
-```python
-from docs_validator import detect
-
-detect("52998224725")
-detect("11222333000181")
-detect("12ABC34501DE35")
-```
-
-Possible results:
-
-    CPF
-    CNPJ
-    CNPJ_ALPHANUMERIC
-
----
-
-# CPF Validation
-
-```python
-from docs_validator import validate_cpf
-
-validate_cpf("52998224725")
-```
-
----
-
-# CNPJ Validation
-
-```python
-from docs_validator import validate_cnpj
-
-validate_cnpj("11222333000181")
-```
-
----
-
-# Generators
-
-Generate valid documents for testing environments.
-
-```python
-from docs_validator import generate_cpf, generate_cnpj
-
-generate_cpf()
-generate_cnpj()
-```
-
-Example:
-
-    41799543807
-    30167399000130
-
----
-
-# Experimental: Alphanumeric CNPJ
-
-Brazil's tax authority announced a future format allowing **alphanumeric
-CNPJ identifiers**.
-
-The library includes an experimental validator for this format.
-
-```python
-from docs_validator import validate
-
-validate("12ABC34501DE35", mode="experimental")
-```
-
-⚠️ **Important**
-
-As of 2026, no real alphanumeric CNPJs are publicly issued.
-
-Any example used in tests or documentation is **synthetic** and only
-intended to validate the algorithm.
 
 ---
 
 # CLI Usage
 
-After installation:
-
-```bash
-docs-validator validate 52998224725
-docs-validator validate 11222333000181
-```
-
-Example output:
-
-    VALID
-
----
-
-# Testing
-
-Run tests with:
-
-```bash
-pytest
-```
-
-Run with coverage:
-
-```bash
-pytest --cov=docs_validator
-```
-
----
-
-# Project Structure
-
-    docs-validator
-    │
-    ├── src
-    │   └── docs_validator
-    │       ├── validator.py
-    │       ├── detect.py
-    │       │
-    │       ├── br
-    │       │   ├── cpf.py
-    │       │   ├── cnpj.py
-    │       │   └── generators.py
-    │       │
-    │       └── experimental
-    │           └── cnpj_alphanumeric.py
-    │
-    ├── tests
-    ├── README.md
-    └── pyproject.toml
-
----
-
-# Example Test Script
+## Basic
 
 ```python
-from docs_validator import *
+docs-validator 11222333000181
+```
 
-print(validate("52998224725"))
-print(validate("11222333000181"))
+## Force type
 
-print(detect("52998224725"))
-print(detect("11222333000181"))
+```python
+docs-validator 12345678909 --type cpf
+docs-validator 11222333000181 --type cnpj
+```
 
-cpf = generate_cpf()
-cnpj = generate_cnpj()
+## Modes
 
-print(cpf, validate_cpf(cpf))
-print(cnpj, validate_cnpj(cnpj))
+```python
+docs-validator 12345678000100 --type cnpj --mode loose
+docs-validator AB12CD34EF5601 --type cnpj --mode experimental
+```
 
-print(validate("12ABC34501DE35", mode="experimental"))
+## Disable DV
+
+```python
+docs-validator 12345678000100 --type cnpj --no-dv
+```
+
+## Detect only
+
+```python
+docs-validator AB12CD34EF5601 --detect
+```
+
+## JSON Output
+
+```python
+docs-validator 11222333000181 --json
 ```
 
 ---
 
-# Why docs-validator?
+# Validation Modes
 
-Many validation libraries:
-
-- focus only on regex
-- do not implement real verification digit algorithms
-- do not support future document formats
-
-docs-validator focuses on:
-
-- correctness of official validation algorithms
-- simple and clean Python API
-- extensibility for multiple countries
-
----
-
-# Roadmap
-
-Future goals for the library:
-
-- Multi-country document validation
-- Support for VAT / SSN style identifiers
-- Additional generators
-- Performance optimization
-- Extended CLI capabilities
+| Mode             | Description                            |
+| :--------------- | :------------------------------------- |
+| **strict**       | Safe default, validates DV for numeric |
+| **loose**        | Only validates format                  |
+| **experimental** | Enables alphanumeric DV validation     |
 
 ---
 
 # Portfolio
 
-Author portfolio:
+## Author
 
-https://thinkbruno.github.io/
+Developed by [Bruno Ramos](https://www.brunoramos.tec.br)
 
 ---
 
