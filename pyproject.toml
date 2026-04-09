@@ -22,4 +22,7 @@ package-dir = {"" = "src"}
 where = ["src"]
 
 [project.scripts]
-docs-validator = "docs_validator.cli:app"
+docs-validator = "docs_validator.cli:main"
+
+[tool.pytest.ini_options]
+pythonpath = ["."]

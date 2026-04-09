@@ -1,31 +1,24 @@
-import typer
-from docs_validator import detect
-from docs_validator.br.generators import generate_cpf, generate_cnpj
-import json
-
-app = typer.Typer()
+import sys
+from docs_validator.validator import validate
 
 
-@app.command()
-def validate(doc: str):
+def main():
+    """
+    CLI entrypoint.
 
-    result = detect(doc)
+    Usage:
+        docs-validator <document>
+    """
+    if len(sys.argv) < 2:
+        print("Usage: docs-validator <document>")
+        sys.exit(1)
 
-    print(json.dumps(result, indent=2))
+    document = sys.argv[1]
 
+    result = validate(document)
 
-@app.command()
-def generate(doc_type: str):
-
-    if doc_type == "cpf":
-        print(generate_cpf())
-
-    elif doc_type == "cnpj":
-        print(generate_cnpj())
-
-    else:
-        raise typer.BadParameter("doc_type must be cpf or cnpj")
+    print(result)
 
 
 if __name__ == "__main__":
-    app()
+    main()
