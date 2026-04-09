@@ -1,6 +1,6 @@
 [project]
 name = "docs-validator"
-version = "1.1.0"
+version = "1.2.0"
 description = "Documents validator (CNPJ numeric and alphanumeric)"
 authors = [{ name = "Bruno Ramos" }]
 readme = "README.md"
